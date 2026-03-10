@@ -1,0 +1,285 @@
+---
+title: "Mental Health Risk Analysis"
+author: "Kayla Lu"
+date: "2026-03-07"
+output: html_document
+---
+
+# Introduction
+Mental health is influenced by multiple demographic, lifestyle,and work-related factors.
+
+This project explores the distribution of mental health risk and examines how different factors such as gender, sleep,
+stress level, and work environment are associated with mental health outcomes.
+
+# Data Preparation
+
+```{r setup, message=FALSE, warning=FALSE}
+# Load required packages
+library(tidyverse)
+library(ggplot2)
+
+# Read dataset
+mental_data <- read_csv("mental_health_dataset.csv")
+```
+
+
+## Data Inspection
+```{r}
+head(mental_data)
+str(mental_data)
+summary(mental_data)
+colSums(is.na(mental_data))
+```
+
+## Data Cleaning
+```{r}
+mental_data$gender <- as.factor(mental_data$gender)
+mental_data$employment_status <- as.factor(mental_data$employment_status)
+mental_data$work_environment <- as.factor(mental_data$work_environment)
+mental_data$mental_health_history <- as.factor(mental_data$mental_health_history)
+mental_data$seeks_treatment <- as.factor(mental_data$seeks_treatment)
+
+mental_data$mental_health_risk <- factor(
+  mental_data$mental_health_risk,
+  levels = c("Low","Medium","High")
+)
+```
+
+# Data Visualisations and Analysis
+## Sample Overview
+### Age Distribution
+```{r}
+ggplot(mental_data, aes(x = age)) +
+  geom_histogram(binwidth = 5, fill="skyblue", color="white") +
+  labs (title="Age Distribusion",
+        x= "Age", y = "Count") +
+  theme_minimal()
+```
+
+The age distribution shows that most participants fall within the young to middle-aged adult range, suggesting that the dataset primarily represents working-age individuals.
+
+### Gender Distribution
+```{r}
+ggplot(mental_data, aes(x=gender)) +
+         geom_bar(fill="skyblue") +
+         theme_minimal() +
+         labs(title="Gender")
+```
+
+The dataset includes participants from different gender groups, with gender groups fairly evenly represented
+
+## Core Analysis
+### Define custom colors 
+```{r}
+risk_colors <- c(
+  "Low" = "lightgreen",
+  "Medium" = "khaki",
+  "High" = "lightcoral"
+)
+scale_fill_manual(values = risk_colors)
+```
+
+### 1. Mental health Risk Distribution
+```{r}
+ggplot(mental_data, aes(x = mental_health_risk, fill= mental_health_risk)) + 
+  geom_bar() +
+  scale_fill_manual(values = risk_colors) +   
+  geom_text(stat = "count",
+    aes(label = ..count..),
+    position = position_stack(vjust = 0.5)) +
+  labs(title = "Distribution of Mental Health Risk",
+    x = "Mental helath Risk", y = "Count") +
+  theme_minimal() +
+  theme(legend.position = "none") 
+```
+
+The distribution of mental health risk varies across participants, with most individuals falling into the **Medium** risk category.
+
+### 2. Gender vs Mental Health Risk
+```{r}
+Gendaer_mental_porportion <- mental_data %>%
+  count(mental_health_risk, gender) %>%
+  group_by(gender) %>%
+  mutate(prop = n / sum(n))
+
+ggplot(Gendaer_mental_porportion, aes(x = gender, y = prop, fill = mental_health_risk)) +
+  geom_col() +
+  geom_text(aes(label = scales::percent(prop)),
+            position = position_stack(vjust = 0.5), size = 3) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = risk_colors) +  
+  labs(title = "Gender vs Mental Health Risk",
+       x = "Gender", y="Percent") +
+  theme_minimal()
+```
+
+Mental health risk is similarly distributed across genders, with most participants at medium risk, then high, and the fewest at low risk.
+
+### Mental Health Measures
+### 3. Depression vs Mental Health Risk
+```{r}
+ggplot(mental_data, aes(x = mental_health_risk, y = depression_score, fill = mental_health_risk)) +
+  geom_boxplot() +
+  scale_fill_manual(values = risk_colors) +  
+  labs(title = "Depresion score vs Mental Helath Risk",
+       x = "Mental Health Risk", y = "Depresion Score") +
+  theme_minimal() +
+  theme(legend.position = "none") 
+```
+
+Depression scores are clearly associated with mental health risk: high scores correspond to high risk, medium scores to medium risk, and low scores to low risk.
+
+### 4. Anxiety vs Mental Health Risk
+```{r}
+ggplot(mental_data, aes(x = mental_health_risk, y= anxiety_score, fill = mental_health_risk)) +
+  geom_boxplot() +
+  scale_fill_manual(values = risk_colors) +  
+  labs(title = "Anxiety score vs Mental Health Risk",
+       x = "Mental Health Risk", y ="Anxiety Score") +
+  theme_minimal() +
+  theme(legend.position = "none") 
+```
+
+Anxiety scores are also associated with mental health risk, with higher scores indicating greater risk, moderate scores corresponding to medium risk, and lower scores to low risk.
+
+### 5. Seek treatment vs Mental health Risk
+```{r}
+Seek_treatment_mental_porportion <- mental_data %>%
+  count(seeks_treatment, mental_health_risk) %>%
+  group_by(mental_health_risk) %>%
+  mutate(prop = n / sum(n))
+
+ggplot(Seek_treatment_mental_porportion, aes(x = mental_health_risk, y = prop, fill = seeks_treatment)) +
+  geom_col() +
+  geom_text(aes(label = scales::percent(prop)),
+            position = position_stack(vjust = 0.5), size = 3) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Proportion of Seeking Treatment by Mental Health Risk",
+       x = "Mental Health History", y = "Propotion", fill = "Seek Treatment") +
+  theme_minimal()
+```
+
+Across all three mental health risk levels, the majority of participants have not sought treatment; however, the high-risk group has a slightly higher proportion of participants who have sought treatment compared to the other two groups.
+
+### 6. Mental Health History vs Mental health Risk
+```{r}
+History_proportion <- mental_data %>%
+  count(mental_health_history, mental_health_risk) %>%
+  group_by(mental_health_risk) %>%
+  mutate (prop = n / sum(n))
+  
+ggplot(History_proportion, aes(x = mental_health_risk, y = prop, fill = mental_health_history)) +
+  geom_col() +
+  geom_text(aes(label = scales::percent(prop)),
+            position = position_stack(vjust = 0.5), size = 3) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Proportion of Mental Health History by Mental health Risk",
+       x  ="Mental Helath Risk", y = "Proportion" , fill = "Mental Health History") +
+  theme_minimal()
+```
+
+The distribution of mental health history is similar across all three risk levels, with about two-thirds of participants reporting no history. The high-risk group has a slightly higher proportion of participants with no history compared to the other two groups.
+
+### Health and Lifestyle Factors##
+### 7. Sleep vs Mental Health Risk
+```{r}
+ggplot(mental_data, aes(x = mental_health_risk, y = sleep_hours, fill = mental_health_risk)) +
+  geom_boxplot() +
+  scale_fill_manual(values = risk_colors) +
+  labs(title = "Sleep hours vs Mental Health Risk",
+       x = "Mental Health Risk", y = "Sleep Hours") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+Sleep duration is similarly distributed across all three mental health risk levels, with most participants sleeping between 5.5 and 7.5 hours.
+
+### 8. Stress Level
+```{r}
+ggplot(mental_data, aes(x = mental_health_risk, y = stress_level, fill = mental_health_risk)) +
+  geom_boxplot() +
+  scale_fill_manual(values = risk_colors) +  
+  labs(title = "Stress Level vs Mental Health Risk",
+       x = "Mental Health Risk", y = "Stress Level") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+The overall range of stress levels is consistent across all three risk levels, with median scores being notably higher for medium and high-risk participants.
+
+### 9. Social Support vs Mental Health Risk
+```{r}
+ggplot(mental_data, aes(x = mental_health_risk, y = social_support_score, fill = mental_health_risk)) +
+  geom_boxplot() +
+  scale_fill_manual(values = risk_colors) +
+  labs(title = "Social Support Score vs Mental Health Risk",
+       x = "Mental Health Risk", y ="Social Support Score") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+Social support scores are similar across all mental health risk levels.
+
+### Work-Related Factors##
+### 10. Employment Status vs Menatl Health Risk
+```{r}
+Employment_mental_propotion <- mental_data %>%
+  count(employment_status, mental_health_risk) %>%
+  group_by(mental_health_risk) %>%
+  mutate(prop = n / sum(n))
+
+ggplot(Employment_mental_propotion, aes(x = mental_health_risk, y= prop, fill = employment_status)) +
+  geom_col() +
+  geom_text(aes(label = scales::percent(prop)),
+            position = position_stack(vjust = 0.5), size = 3) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Proportion of Emploment Status by Mental Health Risk",
+       x = "Mental Health Risk", y = "Proportion") +
+  theme_minimal() 
+```
+
+Employment status is generally similar across all mental health risk levels, with most participants being employed, followed by students, and the fewest unemployed or self-employed. In the high-risk group, the proportion of employed and students is slightly higher than in the other two groups.
+
+
+### 11. Work Environment vs Mental Health Risk
+```{r}
+Environment_mental_proportion <- mental_data %>%
+  count(work_environment, mental_health_risk) %>%
+  group_by(mental_health_risk) %>%
+  mutate(prop = n / sum(n))
+
+ggplot(Environment_mental_proportion, aes(x = mental_health_risk, y = prop, fill= work_environment))+
+  geom_col() +
+  geom_text(aes(label = scales::percent(prop)),
+            position = position_stack(vjust = 0.5), size = 3) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Proportion of Work Environment by Mental Health Risk",
+       x = "Mental Health Risk", y = "Propotion") +
+  theme_minimal()
+```
+
+Overall, most participants work onsite, accounting for nearly half, followed by remote and hybrid work. However, in the high-risk group, the proportion of onsite workers is lower than in the other two groups.
+
+### 12. Productivity vs Mental Health Risk
+```{r}
+ggplot(mental_data, aes(x = mental_health_risk, y = productivity_score, fill = mental_health_risk)) +
+  geom_boxplot() +
+  scale_fill_manual(values = risk_colors) +
+  labs(title = "Productivity Score vs Mental Health Risk",
+       x = "Mental Health Risk", y ="Productivity Score") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+The productivity scores show a distinct downward trend across the three risk levels. The median score drops noticeably from low to high risk, and the middle 50% of scores show almost no overlap between risk levels.
+
+
+# Conclusion
+This analysis explored demographic, lifestyle, and work-related factors associated with mental health risk.
+
+The results suggest that higher **depression scores**, **anxiety scores**, and **stress levels** are associated with increased mental health risk. Additionally, there is a negative relationship between **mental health risk** and **productivity scores**, indicating that participants with higher mental health risk tend to have lower productivity.
+This analysis explored demographic and lifestyle factors associated with mental health risk.
+
+Overall, these findings highlight that **psychological wellbeing is the main driver of mental health risk**, while productivity is inversely related. Addressing psychological factors may help improve both mental health outcomes and work performance.
+
+
