@@ -1,5 +1,5 @@
 ---
-title: "Mental Health Risk Analysis"
+title: "Analysis of Mental Health Risk"
 author: "Kayla Lu"
 date: "2026-03-07"
 output: html_document
@@ -153,9 +153,10 @@ ggplot(Seek_treatment_mental_porportion, aes(x = mental_health_risk, y = prop, f
   geom_col() +
   geom_text(aes(label = scales::percent(prop)),
             position = position_stack(vjust = 0.5), size = 3) +
+  scale_fill_manual(values = c("No" = "lightgreen", "Yes" = "lightcoral")) +
   scale_y_continuous(labels = scales::percent) +
-  labs(title = "Proportion of Seeking Treatment by Mental Health Risk",
-       x = "Mental Health History", y = "Propotion", fill = "Seek Treatment") +
+  labs(title = "Percantage of Seeking Treatment by Mental Health Risk",
+       x = "Mental Health History", y = "Percentage", fill = "Seek Treatment") +
   theme_minimal()
 ```
 
@@ -172,9 +173,10 @@ ggplot(History_proportion, aes(x = mental_health_risk, y = prop, fill = mental_h
   geom_col() +
   geom_text(aes(label = scales::percent(prop)),
             position = position_stack(vjust = 0.5), size = 3) +
+  scale_fill_manual(values = c("No" = "lightgreen", "Yes" = "lightcoral")) +
   scale_y_continuous(labels = scales::percent) +
-  labs(title = "Proportion of Mental Health History by Mental health Risk",
-       x  ="Mental Helath Risk", y = "Proportion" , fill = "Mental Health History") +
+  labs(title = "Percentage of Mental Health History by Mental health Risk",
+       x  ="Mental Helath Risk", y = "Percentage" , fill = "Mental Health History") +
   theme_minimal()
 ```
 
@@ -233,8 +235,8 @@ ggplot(Employment_mental_propotion, aes(x = mental_health_risk, y= prop, fill = 
   geom_text(aes(label = scales::percent(prop)),
             position = position_stack(vjust = 0.5), size = 3) +
   scale_y_continuous(labels = scales::percent) +
-  labs(title = "Proportion of Emploment Status by Mental Health Risk",
-       x = "Mental Health Risk", y = "Proportion") +
+  labs(title = "Percentage of Emploment Status by Mental Health Risk",
+       x = "Mental Health Risk", y = "Percentage") +
   theme_minimal() 
 ```
 
@@ -253,8 +255,8 @@ ggplot(Environment_mental_proportion, aes(x = mental_health_risk, y = prop, fill
   geom_text(aes(label = scales::percent(prop)),
             position = position_stack(vjust = 0.5), size = 3) +
   scale_y_continuous(labels = scales::percent) +
-  labs(title = "Proportion of Work Environment by Mental Health Risk",
-       x = "Mental Health Risk", y = "Propotion") +
+  labs(title = "Percentage of Work Environment by Mental Health Risk",
+       x = "Mental Health Risk", y = "Percentage") +
   theme_minimal()
 ```
 

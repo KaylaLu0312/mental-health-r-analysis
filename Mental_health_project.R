@@ -86,7 +86,6 @@ ggplot(data, aes(x = mental_health_risk, fill= mental_health_risk)) +
   theme_minimal() +
   theme(legend.position = "none") 
 
-
 #2. Gender vs Mental Health Risk
 Gendaer_mental_porportion <- data %>%
   count(mental_health_risk, gender) %>%
@@ -114,7 +113,6 @@ ggplot(data, aes(x = mental_health_risk, y = depression_score, fill = mental_hea
   theme_minimal() +
   theme(legend.position = "none") 
 
-
 #4. Anxiety vs Mental Health Risk
 ggplot(data, aes(x = mental_health_risk, y= anxiety_score, fill = mental_health_risk)) +
   geom_boxplot() +
@@ -124,9 +122,8 @@ ggplot(data, aes(x = mental_health_risk, y= anxiety_score, fill = mental_health_
   theme_minimal() +
   theme(legend.position = "none") 
 
-
 #5. Seek treatment vs Mental health Risk
-Seek_treatment_mental_porportion <- data %>%
+Seek_treatment_mental_porportion <- mental_data %>%
   count(seeks_treatment, mental_health_risk) %>%
   group_by(mental_health_risk) %>%
   mutate(prop = n / sum(n))
@@ -135,25 +132,26 @@ ggplot(Seek_treatment_mental_porportion, aes(x = mental_health_risk, y = prop, f
   geom_col() +
   geom_text(aes(label = scales::percent(prop)),
             position = position_stack(vjust = 0.5), size = 3) +
+  scale_fill_manual(values = c("No" = "lightgreen", "Yes" = "lightcoral")) +
   scale_y_continuous(labels = scales::percent) +
-  labs(title = "Proportion of Seeking Treatment by Mental Health Risk",
-       x = "Mental Health History", y = "Propotion", fill = "Seek Treatment") +
+  labs(title = "Percantage of Seeking Treatment by Mental Health Risk",
+       x = "Mental Health History", y = "Percentage", fill = "Seek Treatment") +
   theme_minimal()
-  
 
 #6. Mental Health History vs Mental health Risk
-History_proportion <- data %>%
+History_proportion <- mental_data %>%
   count(mental_health_history, mental_health_risk) %>%
   group_by(mental_health_risk) %>%
   mutate (prop = n / sum(n))
-  
+
 ggplot(History_proportion, aes(x = mental_health_risk, y = prop, fill = mental_health_history)) +
   geom_col() +
   geom_text(aes(label = scales::percent(prop)),
             position = position_stack(vjust = 0.5), size = 3) +
+  scale_fill_manual(values = c("No" = "lightgreen", "Yes" = "lightcoral")) +
   scale_y_continuous(labels = scales::percent) +
-  labs(title = "Proportion of Mental Health History by Mental health Risk",
-       x  ="Mental Helath Risk", y = "Proportion" , fill = "Mental Health History") +
+  labs(title = "Percentage of Mental Health History by Mental health Risk",
+       x  ="Mental Helath Risk", y = "Percentage" , fill = "Mental Health History") +
   theme_minimal()
 
 
@@ -188,7 +186,7 @@ ggplot(data, aes(x = mental_health_risk, y = social_support_score, fill = mental
 
 ###Work-Related Factors##
 #10. Employment Status vs Menatl Health Risk
-Employment_mental_propotion <- data %>%
+Employment_mental_propotion <- mental_data %>%
   count(employment_status, mental_health_risk) %>%
   group_by(mental_health_risk) %>%
   mutate(prop = n / sum(n))
@@ -198,13 +196,12 @@ ggplot(Employment_mental_propotion, aes(x = mental_health_risk, y= prop, fill = 
   geom_text(aes(label = scales::percent(prop)),
             position = position_stack(vjust = 0.5), size = 3) +
   scale_y_continuous(labels = scales::percent) +
-  labs(title = "Proportion of Emploment Status by Mental Health Risk",
-       x = "Mental Health Risk", y = "Proportion") +
+  labs(title = "Percentage of Emploment Status by Mental Health Risk",
+       x = "Mental Health Risk", y = "Percentage") +
   theme_minimal() 
 
-
 #11. Work Environment vs Mental Health Risk
-Environment_mental_proportion <- data %>%
+Environment_mental_proportion <- mental_data %>%
   count(work_environment, mental_health_risk) %>%
   group_by(mental_health_risk) %>%
   mutate(prop = n / sum(n))
@@ -214,8 +211,8 @@ ggplot(Environment_mental_proportion, aes(x = mental_health_risk, y = prop, fill
   geom_text(aes(label = scales::percent(prop)),
             position = position_stack(vjust = 0.5), size = 3) +
   scale_y_continuous(labels = scales::percent) +
-  labs(title = "Proportion of Work Environment by Mental Health Risk",
-       x = "Mental Health Risk", y = "Propotion") +
+  labs(title = "Percentage of Work Environment by Mental Health Risk",
+       x = "Mental Health Risk", y = "Percentage") +
   theme_minimal()
 
 #12. Productivity vs Mental Health Risk
