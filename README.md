@@ -15,4 +15,4 @@ A data analysis project examining factors associated with mental health risk usi
 
 ## Report
 See the full analysis here:
-[Mental Health Report](file:///Users/kaylalu/Desktop/R%20project/1_Mental%20Health%20Risk/Mental-Health-Risk.html)
+[Mental Health Report](Mental-Health-Risk.html)
