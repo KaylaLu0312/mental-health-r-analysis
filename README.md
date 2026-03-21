@@ -19,5 +19,5 @@ See the full analysis here:
 
 ## Data Source
 - Dataset: Mental Health Dataset
-- Source: (https://www.kaggle.com/datasets/mahdimashayekhi/mental-health)
+- Source: [Kaggle](https://www.kaggle.com/datasets/mahdimashayekhi/mental-health)
 - Description: Contains the full synthetic dataset of 10,000 simulated survey responses related to mental health in the workplace.
